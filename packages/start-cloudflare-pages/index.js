@@ -127,22 +127,23 @@ export default function (miniflareOptions) {
     },
     async build(config, builder) {
       const __dirname = dirname(fileURLToPath(import.meta.url));
+      const outDir = join(config.root, config.build.outDir);
       if (!config.solidOptions.ssr) {
-        await builder.spaClient(join(config.root, "dist", "public"));
-        await builder.server(join(config.root, ".solid", "server"));
+        await builder.spaClient(join(outDir, "dist", "public"));
+        await builder.server(join(outDir, ".solid", "server"));
       } else if (config.solidOptions.experimental.islands) {
-        await builder.islandsClient(join(config.root, "dist", "public"));
-        await builder.server(join(config.root, ".solid", "server"));
+        await builder.islandsClient(join(outDir, "dist", "public"));
+        await builder.server(join(outDir, ".solid", "server"));
       } else {
-        await builder.client(join(config.root, "dist", "public"));
-        await builder.server(join(config.root, ".solid", "server"));
+        await builder.client(join(outDir, "dist", "public"));
+        await builder.server(join(outDir, ".solid", "server"));
       }
 
-      writeFileSync(join(config.root, "dist", "public", "_headers"), getHeadersFile(), "utf8");
+      writeFileSync(join(outDir, "dist", "public", "_headers"), getHeadersFile(), "utf8");
 
-      copyFileSync(join(__dirname, "entry.js"), join(config.root, ".solid", "server", "server.js"));
+      copyFileSync(join(__dirname, "entry.js"), join(outDir, ".solid", "server", "server.js"));
       const bundle = await rollup({
-        input: join(config.root, ".solid", "server", "server.js"),
+        input: join(outDir, ".solid", "server", "server.js"),
         plugins: [
           json(),
           nodeResolve({
@@ -157,7 +158,7 @@ export default function (miniflareOptions) {
       await bundle.write({
         format: "esm",
         inlineDynamicImports: true,
-        file: join(config.root, "functions", "[[path]].js")
+        file: join(outDir, "functions", "[[path]].js")
       });
 
       // closes the bundle
