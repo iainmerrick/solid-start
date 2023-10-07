@@ -72,7 +72,8 @@ export default function ({ edge } = {}) {
   "functions": [
     {
       "function": "index",
-      "path": "/*"
+      "path": "/*",
+      "excludedPath": "/assets/*"
     }
   ],
   "version": 1
