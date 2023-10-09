@@ -1,5 +1,5 @@
-import handler from "./entry-server.js";
 import manifest from "../../netlify/route-manifest.json";
+import handler from "./entry-server.js";
 
 export default async (request, context) => {
   const env = {
@@ -18,19 +18,9 @@ export default async (request, context) => {
   console.log(`No static asset, doing dynamic lookup for: ${request.url}`);
 
   function internalFetch(route, init = {}) {
-    if (route.startsWith("http")) {
-      return fetch(route, init);
-    }
-
-    let url = new URL(route, "http://internal");
-    const request = new Request(url.href, init);
-    return handler({
-      request,
-      clientAddress,
-      locals: {},
-      env,
-      fetch: internalFetch
-    });
+    let url = new URL(route, request.url);
+    console.log(`Internal fetch: ${route} -> ${url}`);
+    return fetch(url, init);
   }
 
   return handler({
