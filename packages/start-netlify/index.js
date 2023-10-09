@@ -1,9 +1,10 @@
+import { copyFileSync, existsSync, promises } from "fs";
+import { dirname, join } from "path";
+
 import common from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
 import nodeResolve from "@rollup/plugin-node-resolve";
 import { spawn } from "child_process";
-import { copyFileSync, existsSync, promises } from "fs";
-import { dirname, join } from "path";
 import { rollup } from "rollup";
 import { fileURLToPath } from "url";
 
@@ -72,8 +73,7 @@ export default function ({ edge } = {}) {
   "functions": [
     {
       "function": "index",
-      "path": "/*",
-      "excludedPath": "/assets/*"
+      "path": "/*"
     }
   ],
   "version": 1
